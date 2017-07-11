@@ -64,35 +64,103 @@ page$Date <- as.POSIXct(strptime(page$Date, "%m/%d/%y", tz="GMT"))
 page$date.day <- as.factor(wday(page$Date, label= TRUE, abbr = TRUE))
 
 
-savePlot <- function(myPlot) {
-  jpeg("myPlot.jpeg", units="in", width=12, height=8, res=300)
+savePlot <- function(myPlot, plotname) {
+  png(paste(plotname,".png", sep = ""), units="in", width=9.5, height=4.5, res=250)
   print(myPlot)
   dev.off()
 }
 
+  
 
-mid <- mean(page$page_engaged_users.day)
-pic1 <- ggplot(page, aes(x=date.day, y=page_fan_adds_unique.day, size=page_impressions.day, 
-                 color=page_engaged_users.day,fill=date.day)) +
-                 scale_color_gradient(high = "#2c3e50", low  = "#bdc3c7")  +
-                 scale_fill_brewer(palette="Spectral") +
-                 scale_size_area() +
-                 geom_boxplot() + 
-                 geom_jitter(width = 0.18) + 
-                 theme_minimal() + 
-                 theme(legend.position = "right")
+# Fans FB Plots -------------------------------------------------------------
+fans1 <- ggplot(
+  page,
+  aes(
+    x = date.day,
+    y = page_fan_adds_unique.day,
+    size = page_impressions.day,
+    color = page_engaged_users.day
+  )
+) +
+  scale_color_gradient(high = "#274046",
+                       low  = "#e6dada")  +
+  geom_boxplot(fill = "white",
+               colour = "#0899DB", show.legend = FALSE) +
+  geom_jitter(width = 0.19,show.legend = FALSE) +
+  theme_minimal() +
+  labs(x = "Dia de la semana",
+       y = "Nuevos Fans ",
+       size = "Vistas de pagina",
+       color = "Actividad de Fans") + 
+  theme(text = element_text(size=15)) + 
+  theme_fivethirtyeight()
 
-pic1 <- ggplot(page, aes(x=date.day, y=page_fan_adds_unique.day, size=page_impressions.day, 
-  color=page_engaged_users.day,fill=date.day)) +
-  scale_color_gradient(high = "#2c3e50", low  = "#bdc3c7")  +
-  scale_fill_manual(values = c("#F8BA6D","#8FC072", "#FF9666","#8368BF","#C93130","#C0E1AD","#3E86EA")) +
-  scale_size_area() +
-  geom_boxplot() + 
-  geom_jitter(width = 0.18) + 
-  theme_minimal() + 
-  theme(legend.position = "right")
-pic1
-savePlot(pic1)
+fans2 <- ggplot(
+  page,
+  aes(
+    x = date.day,
+    y = page_fan_adds_unique.day,
+    size = page_impressions.day
+  )
+) +
+  geom_boxplot(fill = "white",
+               colour = "#0899DB", show.legend = FALSE) +
+  geom_jitter(width = 0.19,show.legend = FALSE, fill = "white") +
+  theme_minimal() +
+  labs(x = "Dia de la semana",
+       y = "Nuevos Fans ",
+       size = "Vistas de pagina",
+       color = "Actividad de Fans") + 
+  theme(text = element_text(size=15)) + 
+  theme_fivethirtyeight()
+
+fans3 <- ggplot(
+  page,
+  aes(
+    x = date.day,
+    y = page_fan_adds_unique.day
+  )
+) +
+  geom_boxplot(fill = "white",
+               colour = "#0899DB", show.legend = FALSE) +
+  theme_minimal() +
+  labs(x = "Dia de la semana",
+       y = "Nuevos Fans ",
+       size = "Vistas de pagina",
+       color = "Actividad de Fans") + 
+  theme(text = element_text(size=15)) + 
+  theme_fivethirtyeight()
+
+fans4 <- ggplot(
+  page,
+  aes(
+    x = 1,
+    y = page_fan_adds_unique.day
+  )
+) +
+  geom_boxplot(fill = "white",
+               colour = "#0899DB", show.legend = FALSE ) +
+  theme_minimal() +
+  labs(x = "Dia de la semana",
+       y = "Nuevos Fans ",
+       size = "Vistas de pagina",
+       color = "Actividad de Fans") + 
+  theme(text = element_text(size=15)) + 
+  theme_fivethirtyeight()
+
+
+savePlot(fans1,"fans1")
+savePlot(fans2,"fans2")
+savePlot(fans3,"fans3")
+savePlot(fans4,"fans4")
+
+summary(page$page_fan_adds_unique.day)
+
+
+
+
+
+# Else --------------------------------------------------------------------
 
 
 page_fan_remover_cum <- page %>% 

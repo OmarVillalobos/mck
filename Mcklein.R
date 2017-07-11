@@ -21,12 +21,16 @@ datos$Posted <- as.character(datos$Posted)
 datos$Posted <- as.POSIXct(strptime(datos$Posted, "%m/%d/%y %I:%M %p", tz="GMT"))
 datos$Posted.hour <- as.factor(hour(datos$Posted))
 datos$Posted.day <- as.factor(wday(datos$Posted, label= TRUE, abbr = TRUE))
+require(scales)
+ggplot(data = datos, aes(x=post_impressions_organic_unique.lifetime,
+                         y=post_impressions_unique.lifetime))+
+                         geom_point() +
+                         scale_x_continuous(labels = comma) + 
+                         scale_y_continuous(labels = comma)
 
-
-ggplot(data=datos, aes(x=post_impressions_organic_unique.lifetime,
-                       y=post_impressions_unique.lifetime, colour = post_consumptions.lifetime,
-                       scale_fill_gradient(low = 'red', high = 'yellow'))) + 
-                       geom_point(shape=2) +
+ggplot(data=datos, aes(x=post_impressions_unique.lifetime,
+                       y=post_impressions_organic_unique.lifetime, colour = post_consumptions.lifetime)) + 
+                       geom_point(shape=1) +
                        geom_smooth(method='lm') +
                        facet_wrap(~Type)
 

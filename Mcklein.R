@@ -164,6 +164,9 @@ summary(page$page_fan_adds_unique.day)
 
 
 
+getwd()
+demo <- read.csv("DEMOG1H17.csv", header = TRUE)
+
 # Else --------------------------------------------------------------------
 
 

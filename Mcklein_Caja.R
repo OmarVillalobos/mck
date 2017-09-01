@@ -25,6 +25,7 @@ datos$Ventas.netas <- as.numeric(datos$Ventas.netas)
 datos <- datos[datos$Fecha < as.Date("2017-06-30 23:00:00"),]
 datos.h1 <- datos %>% select(Fecha, Ventas.netas, day, month, horas)
 
+
 datos <- read.csv("CAJA-JUL-AGO.csv", header = TRUE)
 datos$Fecha <- as.character(datos$Fecha)
 datos$Fecha <- as.POSIXct(strptime(datos$Fecha,"%d/%m/%y %I:%M %p"))
@@ -52,16 +53,33 @@ ggplot(datos, aes(day,Ventas.netas)) +
   annotate("text", x = 5, y= 450, label = "Ventas a la media tarde (5,6,7,8 P.M.)")
 
   
-ggplot(datos, aes(x=Ventas.netas,fill=horas)) +
+venta.hora <- ggplot(datos, aes(x=Ventas.netas,fill=horas)) +
   geom_histogram(aes(y=..density..), binwidth = 20) + 
   geom_vline(xintercept = mea, size= 1, colour = "#FF3721",
              linetype= "dashed", show.legend = TRUE)
 
+venta.day <- ggplot(datos, aes(x=Ventas.netas,fill=day)) +
+  geom_histogram(aes(y=..density..), binwidth = 20) + 
+  geom_vline(xintercept = mea, size= 1, colour = "#FF3721",
+             linetype= "dashed", show.legend = TRUE)
+venta.day
 
-  
+venta.month <- ggplot(datos, aes(x=Ventas.netas,fill=month)) +
+  geom_histogram(aes(y=..density..), binwidth = 20) + 
+  geom_vline(xintercept = mea, size= 1, colour = "#FF3721",
+             linetype= "dashed", show.legend = TRUE)
+venta.month
 
+ventas.jitter <- ggplot(
+  data = datos,
+  aes(x = horas, y = day,
+      colour = Ventas.netas)
+) +
+  geom_jitter(width = 0.20, alpha = 1, height = 0.20,
+              size = 2.5, shape = 19) + 
+  scale_color_gradient(low = "red",high = "yellow")
+ventas.jitter
 
-summary(datos$Ventas.netas)
 
 
 

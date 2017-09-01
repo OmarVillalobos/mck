@@ -10,8 +10,20 @@ library(lubridate)
 library(tseries)
 library(forecast)
 library(ggplot2)
+library(xlsx)
 
-# Sys.setlocale("LC_TIME", "C") will help recognize AM PM  time format
+savePlot <- function(myPlot, plotname) {
+  png(paste(plotname,".png", sep = ""), units="in", width=9.5, height=4.5, res=250)
+  print(myPlot)
+  dev.off()
+}
+top10 <- function(datos,var1,var2){
+datos %>% select(paste(var1),paste(var2)) %>%
+    arrange(desc(paste(var2))) %>%
+    top_n(10)
+}
+
+Sys.setlocale("LC_TIME", "C")  #will help recognize AM PM  time format
 
 # Posts -------------------------------------------------------------------
 getwd()
@@ -21,6 +33,62 @@ datos$Posted <- as.character(datos$Posted)
 datos$Posted <- as.POSIXct(strptime(datos$Posted, "%m/%d/%y %I:%M %p", tz="GMT"))
 datos$Posted.hour <- as.factor(hour(datos$Posted))
 datos$Posted.day <- as.factor(wday(datos$Posted, label= TRUE, abbr = TRUE))
+
+# Top 10 post
+top10 <- datos %>% 
+  select(Permalink,post_impressions_organic_unique.lifetime) %>%
+  arrange(desc(post_impressions_organic_unique.lifetime)) %>%
+  top_n(10)
+
+top10.org <- datos %>% 
+  select(Permalink,post_impressions_organic.lifetime) %>%
+  arrange(desc(post_impressions_organic.lifetime)) %>%
+  top_n(10)
+
+top10.org <- datos %>% 
+  select(Permalink,post_impressions_organic.lifetime) %>%
+  arrange(desc(post_impressions_organic.lifetime)) %>%
+  top_n(10)
+
+top10.paid <- datos %>% 
+  select(Permalink,post_impressions_paid_unique.lifetime) %>%
+  arrange(desc(post_impressions_paid_unique.lifetime)) %>%
+  top_n(10)
+
+top10.paid1 <- datos %>% 
+  select(Permalink,post_impressions_paid.lifetime) %>%
+  arrange(desc(post_impressions_paid.lifetime)) %>%
+  top_n(10)
+
+top10.eng <- datos %>% 
+  select(Permalink,post_engaged_users.lifetime) %>%
+  arrange(desc(post_engaged_users.lifetime)) %>%
+  top_n(10)
+
+
+
+write.xlsx(top10, file= "Top10s.xlsx",
+           sheetName = "Impre.Org.Unique", 
+           row.names = TRUE)
+write.xlsx(top10.org, file= "Top10s.xlsx",
+           sheetName = "Impre.Org", 
+           append = TRUE,
+           row.names = TRUE)
+write.xlsx(top10.paid, file= "Top10s.xlsx",
+           sheetName = "Impre.Paid.Unique", 
+           append = TRUE,
+           row.names = TRUE)
+write.xlsx(top10.paid1, file= "Top10s.xlsx",
+           sheetName = "Impre.Paid.", 
+           append = TRUE,
+           row.names = TRUE)
+write.xlsx(top10.eng, file= "Top10s.xlsx",
+           sheetName = "Users Engagement", 
+           append = TRUE,
+           row.names = TRUE)
+
+
+
 require(scales)
 ggplot(data = datos, aes(x=post_impressions_organic_unique.lifetime,
                          y=post_impressions_unique.lifetime))+
@@ -68,11 +136,7 @@ page$Date <- as.POSIXct(strptime(page$Date, "%m/%d/%y", tz="GMT"))
 page$date.day <- as.factor(wday(page$Date, label= TRUE, abbr = TRUE))
 
 
-savePlot <- function(myPlot, plotname) {
-  png(paste(plotname,".png", sep = ""), units="in", width=9.5, height=4.5, res=250)
-  print(myPlot)
-  dev.off()
-}
+
 
   
 

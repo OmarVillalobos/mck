@@ -9,6 +9,7 @@ Sys.setlocale("LC_TIME", "C")
 
 getwd()
 
+
 datos <- read.csv("Post Analysis as of Oct 11.csv", header = TRUE, nrows = 194)
 datos[is.na(datos)] <- 0
 datos$stories <- datos$share + datos$like + datos$comment
